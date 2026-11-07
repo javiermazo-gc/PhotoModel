@@ -1,0 +1,41 @@
+/* The original single-file prototype ran inside an environment that supplied
+   theme CSS variables (--color-background-primary, --font-sans, etc.) for
+   free. This standalone project defines sane light/dark defaults for those
+   same variable names so every ported component works unmodified. */
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f4f5f6;
+  --color-text-primary: #1a1f27;
+  --color-text-secondary: #5b6472;
+  --color-text-tertiary: #8b94a1;
+  --color-border-tertiary: #d8dce1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1a1f27;
+    --color-background-secondary: #242a33;
+    --color-text-primary: #eef1f4;
+    --color-text-secondary: #a9b2bd;
+    --color-text-tertiary: #7a828e;
+    --color-border-tertiary: #3a3f48;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+button {
+  font-family: inherit;
+}
+
+input[type='range'] {
+  cursor: pointer;
+}
