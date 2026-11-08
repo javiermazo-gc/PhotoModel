@@ -14,6 +14,11 @@ unchanged** except for three documented bug fixes (see
 [`docs/02_errors_and_status.md`](docs/02_errors_and_status.md)) — this is a
 refactor and bug-fix pass, not a rewrite of the science.
 
+The earliest prototype stage of this project (pre-dating the single-file
+HTML version) lives on the [`legacy-prototype`](../../tree/legacy-prototype)
+branch with its own original commit history, kept for reference rather than
+merged into the active codebase.
+
 ## Running it
 
 ```bash
@@ -107,3 +112,20 @@ coordinates, and omits the mouse-wheel zoom / click-drag pan interaction
 entirely (the SVG scales with its container via `width="100%"` instead).
 See `docs/future_improvements.md` (Priority 3) for what full geometric
 parity — and restoring zoom/pan — would involve.
+
+## Development workflow
+
+Solo-maintained project; lightweight trunk-based flow:
+
+- `main` stays green — every push/PR runs `.github/workflows/ci.yml`
+  (`npm ci && npm run typecheck && npm test && npm run build`) via GitHub
+  Actions. Check the Actions tab before trusting a merge.
+- For anything beyond a one-line fix, branch off (`feat/...`, `fix/...`,
+  `docs/...`), open a PR so CI runs, then merge into `main` once green. Quick
+  fixes can go straight to `main` if you've already run `npm test` locally.
+- Any change to the model biochemistry (`src/model/`) needs: a regression
+  test in `src/model/__tests__/`, and an entry in
+  `docs/02_errors_and_status.md` using the project's uncertainty notation
+  (`[At✓]`/`[sp:X]`/`[est]`/`[usr⚠]` — see `docs/01_architecture.md`). The
+  FvCB core in `src/model/kin.ts` is frozen by design — see that doc before
+  touching it.
