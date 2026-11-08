@@ -1,6 +1,6 @@
 // Regression tests for the three documented bug fixes applied during this
 // port (see docs/02_errors_and_status.md "FIXED" section and
-// docs/04_future_improvements.md's former Priority 1 list). One test per
+// docs/archive/port_2026-11-07_future_improvements.md's former Priority 1 list). One test per
 // fix, asserting the CORRECTED behavior so a future change can't silently
 // reintroduce any of these.
 

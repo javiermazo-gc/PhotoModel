@@ -110,7 +110,7 @@ same compartments, nodes, tooltips, and real flux values for all four
 bypass designs on a single fixed-size canvas with simplified, hand-picked
 coordinates, and omits the mouse-wheel zoom / click-drag pan interaction
 entirely (the SVG scales with its container via `width="100%"` instead).
-See `docs/future_improvements.md` (Priority 3) for what full geometric
+See `docs/04_future_improvements.md` (Priority 3) for what full geometric
 parity — and restoring zoom/pan — would involve.
 
 ## Development workflow

@@ -6,7 +6,8 @@ This is a structural port of `photosynthesis_model.html` (the single-file
 React prototype) into a modular Vite + React + TypeScript project. The
 FvCB biochemistry is byte-for-byte identical to the prototype except for
 the three fixes below, which were applied during the port per
-`04_future_improvements.md`'s former "Priority 1" list.
+`docs/archive/port_2026-11-07_future_improvements.md`'s former "Priority 1"
+list.
 
 ### ✅ FIXED in the prototype (photosynthesis_model.html, before this port)
 | Error | Fix |

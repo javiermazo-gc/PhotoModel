@@ -3,7 +3,7 @@
 //
 // Ported from photosynthesis_model.html (lines 396-479).
 //
-// BUG FIX #3 (LOW, docs/04_future_improvements.md "O2 Ha correction"):
+// BUG FIX #3 (LOW, docs/archive/port_2026-11-07_future_improvements.md "O2 Ha correction"):
 // the Arrhenius enthalpy term for O2 solubility/dissolution used
 // Ha = -16000 J/mol. The standard enthalpy of O2 dissolution is
 // approximately -12600 J/mol. Changed below; everything else in this

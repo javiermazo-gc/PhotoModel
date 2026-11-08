@@ -12,7 +12,7 @@
 // Mode B: 3PG -> OAA via Ppc (HCO3-, NOT CO2) — fixes additional CO2 [At✓ Lu 2025]
 //
 // Ported from photosynthesis_model.html (lines 739-842), with the two
-// documented bugs from docs/02_errors_and_status.md / 04_future_improvements.md
+// documented bugs from docs/02_errors_and_status.md / docs/archive/port_2026-11-07_future_improvements.md
 // FIXED here (not left as TODOs):
 //
 // BUG FIX #1 (HIGH): acetylCoA_modeA was `bypass_flux * lipidFrac` — wrong.
