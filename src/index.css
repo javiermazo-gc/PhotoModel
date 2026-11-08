@@ -11,6 +11,17 @@
   --color-text-secondary: #5b6472;
   --color-text-tertiary: #8b94a1;
   --color-border-tertiary: #d8dce1;
+
+  /* Accent + status tokens, consistent with the compartment/confidence
+     palette already used in data/metadata.ts (COL, CONF) — not a second,
+     competing palette. */
+  --accent: #1d9e75;
+  --accent-soft: rgba(29, 158, 117, 0.12);
+  --shadow-sm: 0 1px 2px rgba(20, 24, 30, 0.06);
+  --shadow-md: 0 2px 8px rgba(20, 24, 30, 0.1);
+  --radius-sm: 5px;
+  --radius-md: 7px;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,6 +32,8 @@
     --color-text-secondary: #a9b2bd;
     --color-text-tertiary: #7a828e;
     --color-border-tertiary: #3a3f48;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -30,12 +43,123 @@ body {
   background: var(--color-background-primary);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+/* Every button in this app is a plain <button> with inline per-instance
+   styling for color/background; these rules add the interaction feedback
+   (hover, press, focus) that inline styles alone can't express, without
+   touching any component. */
 button {
   font-family: inherit;
+  transition: filter 0.12s var(--ease), transform 0.08s var(--ease), opacity 0.12s var(--ease);
 }
 
+button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ── Range sliders ───────────────────────────────────────────────────── */
+/* The native slider is small and flat by default; this gives it a
+   proper track + thumb with hover/active feedback, themed per-slider via
+   the existing accentColor inline style (currentColor picks that up). */
 input[type='range'] {
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--color-border-tertiary);
+}
+
+input[type='range']::-moz-range-track {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--color-border-tertiary);
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: currentColor;
+  border: 2px solid var(--color-background-primary);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: currentColor;
+  border: 2px solid var(--color-background-primary);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s var(--ease), box-shadow 0.1s var(--ease);
+}
+
+input[type='range']:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+input[type='range']:active::-webkit-slider-thumb {
+  transform: scale(1.25);
+  box-shadow: var(--shadow-md);
+}
+
+input[type='range']:hover::-moz-range-thumb {
+  transform: scale(1.15);
+}
+
+/* ── Stat tiles (MCard) ──────────────────────────────────────────────── */
+.stat-tile {
+  transition: background-color 0.15s var(--ease), box-shadow 0.15s var(--ease), transform 0.1s var(--ease);
+}
+
+.stat-tile:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* ── Scrollbars (webkit) — thin, unobtrusive, theme-aware ─────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
 }

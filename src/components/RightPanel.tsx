@@ -26,7 +26,7 @@ interface RightPanelProps {
 
 export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo, bypassActive, env, par, scenario, applyScenario }: RightPanelProps) {
   return (
-    <div style={{ width: 240, flexShrink: 0, borderLeft: '0.5px solid var(--color-border-tertiary)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: 264, flexShrink: 0, borderLeft: '0.5px solid var(--color-border-tertiary)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', borderBottom: '0.5px solid var(--color-border-tertiary)' }}>
         {(
           [
@@ -40,14 +40,15 @@ export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo
             onClick={() => setRightTab(t)}
             style={{
               flex: 1,
-              padding: '6px 4px',
-              fontSize: 9,
+              padding: '7px 4px',
+              fontSize: 9.5,
               fontWeight: rightTab === t ? 600 : 400,
               background: rightTab === t ? 'var(--color-background-primary)' : 'transparent',
               border: 'none',
-              borderBottom: rightTab === t ? '2px solid var(--color-text-primary)' : '2px solid transparent',
+              borderBottom: rightTab === t ? '2px solid var(--accent)' : '2px solid transparent',
               color: rightTab === t ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'color 0.12s var(--ease), border-color 0.12s var(--ease)'
             }}
           >
             {l}
@@ -55,7 +56,7 @@ export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo
         ))}
       </div>
 
-      <div style={{ padding: 10, overflowY: 'auto', flex: 1 }}>
+      <div style={{ padding: 11, overflowY: 'auto', flex: 1 }}>
         {rightTab === 'metrics' && <MetricsTab m={m} par={par} env={env} scenario={scenario} applyScenario={applyScenario} activeInfo={activeInfo} setActiveInfo={setActiveInfo} bypassActive={bypassActive} />}
         {rightTab === 'bypass' && <BypassTab m={m} bypassActive={bypassActive} />}
         {rightTab === 'pools' && <PoolsTab m={m} />}
@@ -116,7 +117,7 @@ function MetricsTab({
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 5, marginBottom: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 7, marginBottom: 10 }}>
         {cards.map(([label, value, unit, color]) => (
           <MCard key={label} label={label} value={value} unit={unit} color={color} onInfo={setActiveInfo} active={activeInfo === label} />
         ))}
@@ -128,7 +129,7 @@ function MetricsTab({
           <div key={l} style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: 'var(--color-text-tertiary)' }}>{l}</span>
             <span style={{ color: c, fontWeight: 500 }}>
-              {v} <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 400, fontSize: 7.5 }}>{u}</span>
+              {v} <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 400, fontSize: 8 }}>{u}</span>
             </span>
           </div>
         ))}
@@ -139,9 +140,9 @@ function MetricsTab({
       </div>
 
       <details style={{ marginTop: 8 }}>
-        <summary style={{ fontSize: 9, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none', marginBottom: 4 }}>▶ Compare all scenarios</summary>
+        <summary style={{ fontSize: 9.5, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none', marginBottom: 5 }}>▶ Compare all scenarios</summary>
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 7.5 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 8 }}>
             <thead>
               <tr style={{ borderBottom: '0.5px solid var(--color-border-tertiary)' }}>
                 {['Scenario', 'A', 'bp%', '⚠'].map((h) => (
@@ -158,7 +159,7 @@ function MetricsTab({
                   onClick={() => applyScenario(r.scenario)}
                   style={{ borderBottom: '0.5px solid var(--color-border-tertiary)', background: r.scenario === scenario ? 'var(--color-background-secondary)' : 'transparent', cursor: 'pointer' }}
                 >
-                  <td style={{ padding: '2px 3px', color: r.scenario === scenario ? 'var(--color-text-primary)' : 'var(--color-text-secondary)', fontWeight: r.scenario === scenario ? 600 : 400, fontSize: 7 }}>
+                  <td style={{ padding: '2px 3px', color: r.scenario === scenario ? 'var(--color-text-primary)' : 'var(--color-text-secondary)', fontWeight: r.scenario === scenario ? 600 : 400, fontSize: 7.5 }}>
                     {r.scenario}
                   </td>
                   <td style={{ padding: '2px 3px', color: '#1D9E75', fontWeight: 500 }}>{num(r.A).toFixed(1)}</td>
@@ -172,7 +173,7 @@ function MetricsTab({
       </details>
 
       <details style={{ marginTop: 6 }}>
-        <summary style={{ fontSize: 9, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none' }}>▶ Uncertainty log</summary>
+        <summary style={{ fontSize: 9.5, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none' }}>▶ Uncertainty log</summary>
         <div style={{ fontSize: 8, lineHeight: 1.7, marginTop: 4 }}>
           {(
             [
@@ -187,9 +188,9 @@ function MetricsTab({
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 1 }}>
                 <span style={{ width: 7, height: 7, background: CONF[u.conf], borderRadius: '50%', display: 'inline-block', flexShrink: 0 }} />
                 <span style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: 8 }}>{u.label}</span>
-                <span style={{ color: 'var(--color-text-tertiary)', marginLeft: 'auto', fontSize: 7.5 }}>{u.val.toFixed(3)}</span>
+                <span style={{ color: 'var(--color-text-tertiary)', marginLeft: 'auto', fontSize: 8 }}>{u.val.toFixed(3)}</span>
               </div>
-              <div style={{ color: 'var(--color-text-tertiary)', paddingLeft: 11, fontSize: 7.5 }}>{u.fix}</div>
+              <div style={{ color: 'var(--color-text-tertiary)', paddingLeft: 11, fontSize: 8 }}>{u.fix}</div>
             </div>
           ))}
         </div>
@@ -270,7 +271,7 @@ function BypassTab({ m, bypassActive }: { m: ModelOutput; bypassActive: boolean 
         <div key={l} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }}>
           <span style={{ fontSize: 8.5, color: String(l).includes('⚠') ? '#e07b00' : 'var(--color-text-secondary)', flex: 1 }}>{l}</span>
           <span style={{ fontWeight: 700, color: c, fontSize: 9, minWidth: 40, textAlign: 'right' }}>{v.toFixed(2)}</span>
-          <span style={{ fontSize: 7.5, color: 'var(--color-text-tertiary)', minWidth: 36 }}>{u}</span>
+          <span style={{ fontSize: 8, color: 'var(--color-text-tertiary)', minWidth: 36 }}>{u}</span>
         </div>
       ))}
 
@@ -285,7 +286,7 @@ function BypassTab({ m, bypassActive }: { m: ModelOutput; bypassActive: boolean 
           <div key={l} style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: 'var(--color-text-tertiary)' }}>{l}</span>
             <span style={{ color: c, fontWeight: 500 }}>
-              {v} <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 400, fontSize: 7.5 }}>{u}</span>
+              {v} <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 400, fontSize: 8 }}>{u}</span>
             </span>
           </div>
         ))}
@@ -299,7 +300,7 @@ function BypassTab({ m, bypassActive }: { m: ModelOutput; bypassActive: boolean 
         </div>
       )}
 
-      {m.bypass_note && <div style={{ marginTop: 6, fontSize: 7.5, color: 'var(--color-text-tertiary)', lineHeight: 1.5 }}>{m.bypass_note as string}</div>}
+      {m.bypass_note && <div style={{ marginTop: 6, fontSize: 8, color: 'var(--color-text-tertiary)', lineHeight: 1.5 }}>{m.bypass_note as string}</div>}
 
       <div style={{ marginTop: 6, paddingTop: 5, borderTop: '0.5px solid var(--color-border-tertiary)' }}>
         <div style={{ fontSize: 9, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 4 }}>METABOLIC FATES</div>
@@ -307,7 +308,7 @@ function BypassTab({ m, bypassActive }: { m: ModelOutput; bypassActive: boolean 
           <div key={l} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
             <span style={{ fontSize: 8, color: 'var(--color-text-secondary)' }}>{l}</span>
             <span style={{ fontSize: 8.5, fontWeight: 600, color: c }}>
-              {v.toFixed(3)} <span style={{ fontWeight: 400, fontSize: 7, color: 'var(--color-text-tertiary)' }}>{u}</span>
+              {v.toFixed(3)} <span style={{ fontWeight: 400, fontSize: 8, color: 'var(--color-text-tertiary)' }}>{u}</span>
             </span>
           </div>
         ))}
@@ -375,13 +376,13 @@ function PoolsTab({ m }: { m: ModelOutput }) {
         <div style={{ fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 3 }}>How pool sizes are computed</div>
         <div style={{ color: 'var(--color-text-secondary)' }}>
           This is a <strong>steady-state model</strong> — no ODEs, no time. Pool sizes are back-calculated from fluxes using the MM inverse:{' '}
-          <code style={{ fontSize: 7.5, background: '#0001', padding: '0 3px', borderRadius: 2 }}>[S] = Km × v / (Vmax − v)</code>. This is valid at steady state. But most pools don't <em>set</em> the
+          <code style={{ fontSize: 8, background: '#0001', padding: '0 3px', borderRadius: 2 }}>[S] = Km × v / (Vmax − v)</code>. This is valid at steady state. But most pools don't <em>set</em> the
           fluxes — the fluxes are imposed stoichiometrically. The two exceptions that genuinely feed back into A are <strong>pool_2PG</strong> (→ Wj via Loop 1) and <strong>glycolate_pool</strong> (→
           bypass flux). The rest are useful for metabolomics comparison only.
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8, fontSize: 7.5, color: 'var(--color-text-tertiary)' }}>
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8, fontSize: 8, color: 'var(--color-text-tertiary)' }}>
         <span>🔗 feeds back into A</span>
         <span>📊 metabolomics reference only</span>
         <span style={{ color: '#1D9E75' }}>[At✓] Arabidopsis</span>
@@ -391,7 +392,7 @@ function PoolsTab({ m }: { m: ModelOutput }) {
       </div>
 
       <div style={{ fontSize: 9, fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 2 }}>🔗 Active feedbacks — change A</div>
-      <div style={{ fontSize: 7.5, color: 'var(--color-text-tertiary)', marginBottom: 6, lineHeight: 1.4 }}>These pools/enzymes are wired into kinFeedback() and shift the final A value.</div>
+      <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', marginBottom: 6, lineHeight: 1.4 }}>These pools/enzymes are wired into kinFeedback() and shift the final A value.</div>
       {activeFeedbacks.map((u) => {
         const hi = u.val > u.warn;
         const scalePct = u.fval != null ? `→ scales A by ×${u.fval.toFixed(3)}` : '';
@@ -407,29 +408,29 @@ function PoolsTab({ m }: { m: ModelOutput }) {
             <div style={{ background: 'var(--color-background-primary)', borderRadius: 2, height: 4, marginBottom: 4 }}>
               <div style={{ width: `${Math.min((u.val / u.warn) * 100, 100)}%`, height: '100%', background: hi ? '#E24B4A' : u.col, borderRadius: 2, transition: 'width 0.2s' }} />
             </div>
-            <div style={{ fontSize: 7.5, color: u.col, marginBottom: 2 }}>
+            <div style={{ fontSize: 8, color: u.col, marginBottom: 2 }}>
               🔗 {u.feedback} {scalePct && <span style={{ color: '#555' }}>{scalePct}</span>}
             </div>
-            <div style={{ fontSize: 7, color: '#1D9E75', marginBottom: 2 }}>{u.verif}</div>
-            <div style={{ fontSize: 7, color: 'var(--color-text-tertiary)', fontStyle: 'italic' }}>{u.honest}</div>
+            <div style={{ fontSize: 8, color: '#1D9E75', marginBottom: 2 }}>{u.verif}</div>
+            <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', fontStyle: 'italic' }}>{u.honest}</div>
           </div>
         );
       })}
 
       <div style={{ fontSize: 9, fontWeight: 600, color: 'var(--color-text-primary)', margin: '10px 0 2px' }}>📊 Reference only — don't change A</div>
-      <div style={{ fontSize: 7.5, color: 'var(--color-text-tertiary)', marginBottom: 6, lineHeight: 1.4 }}>Computed for comparison with metabolomics data. Not wired into feedback loops.</div>
+      <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', marginBottom: 6, lineHeight: 1.4 }}>Computed for comparison with metabolomics data. Not wired into feedback loops.</div>
       {referenceOnly.map((u) => (
         <div key={u.label} style={{ marginBottom: 6, padding: '5px 7px', borderRadius: 5, background: 'var(--color-background-secondary)', opacity: 0.85 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
             <span style={{ fontSize: 8, fontWeight: 500, color: 'var(--color-text-secondary)' }}>{u.label}</span>
             <span style={{ fontSize: 8, fontWeight: 600, color: u.col }}>{u.isSat ? (u.val * 100).toFixed(0) + '%' : u.val.toFixed(4) + ' mM'}</span>
           </div>
-          <div style={{ fontSize: 7, color: '#1D9E75', marginBottom: 1 }}>{u.verif}</div>
-          <div style={{ fontSize: 7, color: 'var(--color-text-tertiary)', fontStyle: 'italic' }}>{u.note}</div>
+          <div style={{ fontSize: 8, color: '#1D9E75', marginBottom: 1 }}>{u.verif}</div>
+          <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', fontStyle: 'italic' }}>{u.note}</div>
         </div>
       ))}
 
-      <div style={{ marginTop: 6, fontSize: 7.5, color: 'var(--color-text-tertiary)', lineHeight: 1.6, padding: '4px 0', borderTop: '0.5px solid var(--color-border-tertiary)' }}>
+      <div style={{ marginTop: 6, fontSize: 8, color: 'var(--color-text-tertiary)', lineHeight: 1.6, padding: '4px 0', borderTop: '0.5px solid var(--color-border-tertiary)' }}>
         Trx f state: {(num(m.trxf_red) * 100).toFixed(0)}% reduced [At✓ Xi 2026] · Stromal redox:{' '}
         {num(m.redox_pressure) > 0.65 ? '⚠ oxidised' : num(m.redox_pressure) < 0.35 ? 'reducing' : 'neutral'}
       </div>

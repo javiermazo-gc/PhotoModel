@@ -20,22 +20,23 @@ export function MCard({ label, value, unit, color, onInfo, active }: MCardProps)
   const c = isNeg ? '#E24B4A' : color || 'var(--color-text-primary)';
   return (
     <div
+      className="stat-tile"
       onClick={() => onInfo(active ? '' : label)}
       style={{
         background: active ? 'var(--color-background-primary)' : 'var(--color-background-secondary)',
-        borderRadius: 6,
-        padding: '5px 7px',
+        borderRadius: 'var(--radius-sm)',
+        padding: '7px 9px',
         textAlign: 'center',
-        borderLeft: `2.5px solid ${active ? c : isNeg ? '#E24B4A' : color || '#ccc'}`,
+        borderLeft: `3px solid ${active ? c : isNeg ? '#E24B4A' : color || '#ccc'}`,
         cursor: 'pointer',
         outline: active ? `1px solid ${c}` : 'none',
         userSelect: 'none'
       }}
     >
-      <div style={{ fontSize: 8, color: 'var(--color-text-secondary)', marginBottom: 1 }}>{label}</div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: c }}>{v}</div>
-      <div style={{ fontSize: 7.5, color: 'var(--color-text-tertiary)' }}>{unit}</div>
-      <div style={{ fontSize: 7, color: 'var(--color-text-tertiary)', marginTop: 1 }}>ⓘ</div>
+      <div style={{ fontSize: 9, color: 'var(--color-text-secondary)', marginBottom: 2, fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: 15.5, fontWeight: 650, color: c, letterSpacing: '-0.01em' }}>{v}</div>
+      <div style={{ fontSize: 8.5, color: 'var(--color-text-tertiary)', marginTop: 1 }}>{unit}</div>
+      <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', marginTop: 2, opacity: 0.7 }}>ⓘ</div>
     </div>
   );
 }
@@ -96,15 +97,15 @@ interface SldProps {
 
 export function Sld({ k, val, set, min, max, step = 1, label, unit, color, tip }: SldProps) {
   return (
-    <div style={{ marginBottom: 6 }} title={tip}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9.5, marginBottom: 1 }}>
+    <div style={{ marginBottom: 8 }} title={tip}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 2 }}>
         <span style={{ fontWeight: 500, color: color || 'var(--color-text-primary)' }}>{label}</span>
         <span style={{ fontWeight: 600, color: color || 'var(--color-text-primary)' }}>
           {val}
           {unit}
         </span>
       </div>
-      {tip && <div style={{ fontSize: 7.5, color: 'var(--color-text-tertiary)', marginBottom: 2, lineHeight: 1.3 }}>{tip}</div>}
+      {tip && <div style={{ fontSize: 8, color: 'var(--color-text-tertiary)', marginBottom: 3, lineHeight: 1.4 }}>{tip}</div>}
       <input
         type="range"
         min={min}
@@ -112,7 +113,7 @@ export function Sld({ k, val, set, min, max, step = 1, label, unit, color, tip }
         step={step}
         value={val}
         onChange={(e) => set(k, +e.target.value)}
-        style={{ width: '100%', accentColor: color || COL.cbb }}
+        style={{ width: '100%', color: color || COL.cbb, accentColor: color || COL.cbb }}
       />
     </div>
   );
@@ -122,7 +123,7 @@ export function LimitBanner({ m }: { m: KinFeedbackOutput & { belowCompPt?: bool
   const isRub = m.limitState === 'Rubisco';
   const c = isRub ? '#533AB7' : '#BA7517';
   return (
-    <div style={{ padding: '5px 10px', borderRadius: 5, background: c + '12', border: `0.5px solid ${c}`, fontSize: 9.5, color: c, lineHeight: 1.6 }}>
+    <div style={{ padding: '7px 11px', borderRadius: 'var(--radius-sm)', background: c + '12', border: `0.5px solid ${c}`, fontSize: 10, color: c, lineHeight: 1.6 }}>
       <strong>{m.limitState}-limited</strong> — Wc={m.Wc.toFixed(1)}, Wj={m.Wj.toFixed(1)} µmol/m²/s.{' '}
       {isRub ? "More light alone won't increase A — need more CO₂ or Vcmax." : "More CO₂ alone won't increase A — need more light or higher Jmax."}
       {m.belowCompPt && (

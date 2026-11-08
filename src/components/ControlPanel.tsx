@@ -51,7 +51,7 @@ export function ControlPanel({
             title={p.note}
             onClick={() => Object.entries(p.e).forEach(([k, v]) => setE(k as keyof Env, v as number))}
             style={{
-              fontSize: 8.5,
+              fontSize: 9.5,
               padding: '2px 7px',
               borderRadius: 10,
               background: 'var(--color-background-primary)',
@@ -79,7 +79,7 @@ export function ControlPanel({
                 key={t}
                 onClick={() => setBypassType(t)}
                 style={{
-                  fontSize: 9,
+                  fontSize: 9.5,
                   padding: '3px 10px',
                   borderRadius: 5,
                   background: bypassType === t ? COL.keb : 'var(--color-background-secondary)',
@@ -119,7 +119,7 @@ export function ControlPanel({
                 onClick={() => applyScenario(name)}
                 title={sc.label}
                 style={{
-                  fontSize: 8.5,
+                  fontSize: 9.5,
                   padding: '3px 8px',
                   borderRadius: 5,
                   background: scenario === name ? 'var(--color-text-primary)' : 'var(--color-background-secondary)',
@@ -160,7 +160,7 @@ export function ControlPanel({
                   onClick={() => setPStr('photochemistry_model', val)}
                   title="Johnson-Berry 2026 (bioRxiv 2026.05.08.723728): replaces the empirical theta curvature parameter with a mechanistic cytochrome-b6f electron transport capacity. See docs/proposals/johnson_berry.md."
                   style={{
-                    fontSize: 9,
+                    fontSize: 9.5,
                     padding: '3px 10px',
                     borderRadius: 5,
                     background: active ? '#4a7fe2' : 'var(--color-background-secondary)',
@@ -203,21 +203,21 @@ export function ControlPanel({
                   tip="[est] Combined leaf-absorptance × PSI-fraction term. Defaults to the same value as the FvCB α slider."
                 />
               </div>
-              <div style={{ fontSize: 9, color: 'var(--color-text-tertiary)', marginBottom: 4 }}>
+              <div style={{ fontSize: 9.5, color: 'var(--color-text-tertiary)', marginBottom: 4 }}>
                 η (PSI:PSII ratio, computed from Cc and Γ*, not user-set):{' '}
                 {typeof m?.eta === 'number' ? m.eta.toFixed(4) : '—'}
               </div>
             </>
           )}
 
-          <div style={{ fontSize: 9, color: 'var(--color-text-tertiary)', marginTop: 8 }}>
+          <div style={{ fontSize: 9.5, color: 'var(--color-text-tertiary)', marginTop: 8 }}>
             Literature presets:{' '}
             {LIT_PRESETS.map((p) => (
               <button
                 key={p.n}
                 title={p.src}
                 onClick={() => Object.entries(p.e).forEach(([k, v]) => setE(k as keyof Env, v as number))}
-                style={{ fontSize: 8.5, padding: '1px 6px', margin: '0 3px 3px 0', borderRadius: 8, background: 'var(--color-background-secondary)', border: '0.5px solid var(--color-border-tertiary)', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
+                style={{ fontSize: 9.5, padding: '1px 6px', margin: '0 3px 3px 0', borderRadius: 8, background: 'var(--color-background-secondary)', border: '0.5px solid var(--color-border-tertiary)', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
               >
                 {p.n}
               </button>
