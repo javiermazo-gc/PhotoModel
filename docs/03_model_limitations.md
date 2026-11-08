@@ -49,3 +49,25 @@ They appear only in the PR/Bypass/Advanced tabs.
 This model uses Bernacchi 2003 values (Ha=43900, Hd=200000, dS=640).
 The `plantecophys` R package uses Ha=29680, dS=631.88 from a broader compilation.
 Both are valid; values differ by ~10% at 35°C. Not an error, a choice.
+
+## Johnson-Berry Electron Transport Model (opt-in)
+When `photochemistry_model: 'johnson_berry'` is selected instead of the
+default FvCB path:
+- The paper's own validation assumed infinite mesophyll conductance
+  (`Cc = Ci`); this model already applies a scalar `Cc_Ci` correction
+  regardless of which electron-transport formula is active, so this is no
+  worse than the model's existing simplification, but not a more rigorous
+  gm treatment either.
+- The default `Cb6f_max25 = 1.4 × Jmax25` conversion factor is an empirical
+  regression from a cross-species dataset (601 A-Ci curves; the paper
+  reports 1-1.8× across species) [est sp:multi] — not an
+  Arabidopsis-specific measurement, same caveat tier as `Srel25` or `CrGDH
+  Km` elsewhere in this model.
+- `alpha1` (the combined leaf-absorptance × PSI-fraction term) defaults to
+  the same numeric value as the FvCB path's `alpha` [est] — a simplifying
+  choice, not a measured equivalence.
+- `eta`'s range (1.0-1.125, verified both analytically and in
+  `src/model/__tests__/johnsonBerry.test.ts`) means the practical effect of
+  switching models is concentrated in the *shape* of the light-response
+  curve (smoother, slightly lower A at intermediate light — see
+  `docs/proposals/johnson_berry.md`), not a large CO2-sensitivity swing.

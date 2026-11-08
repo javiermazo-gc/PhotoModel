@@ -1,5 +1,5 @@
 import { COL, ECO_PRESETS, LIT_PRESETS } from '../data/metadata';
-import { SCENARIOS, type BypassType, type Env, type Params } from '../model';
+import { SCENARIOS, type BypassType, type Env, type ModelOutput, type Params } from '../model';
 import { Sld } from './panels';
 
 interface ControlPanelProps {
@@ -7,6 +7,8 @@ interface ControlPanelProps {
   setE: (k: keyof Env, v: number) => void;
   par: Params;
   setP: (k: string, v: number) => void;
+  setPStr: (k: string, v: string) => void;
+  m: ModelOutput;
   moduleTab: string;
   bypassActive: boolean;
   setBypassActive: (v: boolean) => void;
@@ -21,6 +23,8 @@ export function ControlPanel({
   setE,
   par,
   setP,
+  setPStr,
+  m,
   moduleTab,
   bypassActive,
   setBypassActive,
@@ -138,6 +142,73 @@ export function ControlPanel({
             <Sld k="bypass_Km_glycolate" val={(par.bypass_Km_glycolate as number) ?? 0.04} set={setP} min={0.01} max={0.5} step={0.01} label="Bypass Km(glycolate)" unit=" mM" color={COL.keb} />
             <Sld k="refix_efficiency" val={(par.refix_efficiency as number) ?? 0.6} set={setP} min={0} max={1} step={0.05} label="CO₂ refixation efficiency" unit="" color={COL.keb} />
           </div>
+
+          <div style={{ fontSize: 10, fontWeight: 600, marginBottom: 6, marginTop: 10 }}>
+            Electron transport model
+          </div>
+          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 6 }}>
+            {(
+              [
+                ['fvcb', 'FvCB (empirical θ)'],
+                ['johnson_berry', 'Johnson–Berry (Cb6f) [est]']
+              ] as [string, string][]
+            ).map(([val, label]) => {
+              const active = (par.photochemistry_model ?? 'fvcb') === val;
+              return (
+                <button
+                  key={val}
+                  onClick={() => setPStr('photochemistry_model', val)}
+                  title="Johnson-Berry 2026 (bioRxiv 2026.05.08.723728): replaces the empirical theta curvature parameter with a mechanistic cytochrome-b6f electron transport capacity. See docs/proposals/johnson_berry.md."
+                  style={{
+                    fontSize: 9,
+                    padding: '3px 10px',
+                    borderRadius: 5,
+                    background: active ? '#4a7fe2' : 'var(--color-background-secondary)',
+                    border: '0.5px solid var(--color-border-tertiary)',
+                    color: active ? '#fff' : 'var(--color-text-primary)',
+                    cursor: 'pointer',
+                    fontWeight: active ? 600 : 400
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          {(par.photochemistry_model ?? 'fvcb') === 'johnson_berry' && (
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2px 16px', marginBottom: 4 }}>
+                <Sld
+                  k="Cb6f_max25"
+                  val={(par.Cb6f_max25 as number) ?? 1.4 * ((par.Jmax_Vcmax_ratio as number) ?? 1.67) * ((par.Vcmax25 as number) ?? 120)}
+                  set={setP}
+                  min={50}
+                  max={600}
+                  step={5}
+                  label="Cb6f_max25"
+                  unit=" µmol e⁻/m²/s"
+                  color="#4a7fe2"
+                  tip="[est sp:multi] Max cytochrome b6f electron flow at 25°C. Default: 1.4 × Jmax25 (paper reports 1-1.8× across 601 A-Ci curves, cross-species)."
+                />
+                <Sld
+                  k="alpha1"
+                  val={(par.alpha1 as number) ?? (par.alpha as number) ?? 0.3}
+                  set={setP}
+                  min={0.05}
+                  max={0.6}
+                  step={0.01}
+                  label="α₁ (PSI light fraction)"
+                  unit=""
+                  color="#4a7fe2"
+                  tip="[est] Combined leaf-absorptance × PSI-fraction term. Defaults to the same value as the FvCB α slider."
+                />
+              </div>
+              <div style={{ fontSize: 9, color: 'var(--color-text-tertiary)', marginBottom: 4 }}>
+                η (PSI:PSII ratio, computed from Cc and Γ*, not user-set):{' '}
+                {typeof m?.eta === 'number' ? m.eta.toFixed(4) : '—'}
+              </div>
+            </>
+          )}
 
           <div style={{ fontSize: 9, color: 'var(--color-text-tertiary)', marginTop: 8 }}>
             Literature presets:{' '}

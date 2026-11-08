@@ -35,6 +35,16 @@ export interface Params {
   Jmax_Vcmax_ratio?: number;
   alpha?: number;
   theta?: number;
+  /** Electron-transport formulation for J. Default 'fvcb' (empirical
+   *  non-rectangular hyperbola, uses alpha/theta/Jmax). 'johnson_berry'
+   *  uses cytochrome-b6f capacity instead — see docs/proposals/johnson_berry.md. */
+  photochemistry_model?: 'fvcb' | 'johnson_berry';
+  /** Johnson-Berry only: max cytochrome b6f electron flow at 25C, µmol e-/m²/s.
+   *  Defaults to 1.4 x Jmax25 [est sp:multi] if unset. */
+  Cb6f_max25?: number;
+  /** Johnson-Berry only: fraction of absorbed irradiance reaching PSI.
+   *  Defaults to the same value as `alpha` if unset. */
+  alpha1?: number;
   Rd_fraction?: number;
   ci_ca?: number;
   Cc_Ci?: number;
@@ -134,6 +144,12 @@ export interface KinOutput {
   Jmax: number;
   limitState: 'Rubisco' | 'RuBP' | 'TPU';
   belowCompPt: boolean;
+  /** Which J formulation was used — see photochemistry_model in Params. */
+  photochemistryModel: 'fvcb' | 'johnson_berry';
+  /** Johnson-Berry only: PSI:PSII electron transport ratio. null under 'fvcb'. */
+  eta: number | null;
+  /** Johnson-Berry only: temperature-adjusted cytochrome b6f capacity. null under 'fvcb'. */
+  Cb6fmax: number | null;
 }
 
 /** Output of photoResp() — stoichiometric-only photorespiration fluxes. */

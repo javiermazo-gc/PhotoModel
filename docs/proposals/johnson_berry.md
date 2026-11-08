@@ -1,6 +1,27 @@
 # Johnson–Berry Electron Transport Model — Integration Proposal
 
-**Status**: design proposal, not implemented. Written 2026-11-07.
+**Status**: implemented 2026-11-08. See `src/model/electronTransport.ts`,
+`src/model/kin.ts` (gated behind `params.photochemistry_model`), and
+`src/model/__tests__/johnsonBerry.test.ts`.
+
+**Important correction vs. the proposal below**: an earlier AI-summarized
+reading of the paper (not a direct read of the typeset equations) produced
+a subtly wrong formula for η — specifically a `Cc − Γ*` denominator that
+isn't in the actual paper and caused η to range from ~0.2 to ~1 instead of
+the paper's stated 1.0–1.125. The implementation was corrected against the
+actual rendered equations (2) and (3) on page 4 of the PDF (these equations
+are embedded as images in the paper with no extractable text layer, so a
+text-based fetch cannot recover them — rendering the PDF page to an image
+and reading it directly was necessary). The verified equations are:
+
+```
+J = eta^-1 * (Cb6fmax * Q) / (Cb6fmax / (alpha1 * phi1Pmax) + Q)
+eta = 1 - nL/nC + (3*Cc + 7*gammastar) / ((4*Cc + 8*gammastar) * nC)
+```
+
+The rest of this document (the original proposal) is kept below for
+historical context; where it conflicts with the corrected equations above,
+the equations above are authoritative.
 
 ## Source
 

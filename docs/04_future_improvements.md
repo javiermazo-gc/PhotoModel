@@ -100,22 +100,29 @@ Save/load slider state as JSON for reproducibility.
 ### Temperature response curves
 A mini chart showing A vs temperature at current params.
 
-### Light response curves + Johnson–Berry electron transport model
-See `docs/proposals/johnson_berry.md` for the full design. Briefly: add a
-mechanistic alternative to the empirical FvCB electron-transport term
-(`kin()`'s `J` calculation currently uses the non-rectangular hyperbola with
-an empirical `theta` curvature parameter) based on Lamour, Chave, Johnson,
-Berry et al. 2026 (bioRxiv 2026.05.08.723728), which models electron
-transport via cytochrome b6f capacity instead. `kin()` already computes
-`Cc` and `Γ*` before the `J` line, which this formulation needs — no new
-environmental inputs required, just a `photochemistry_model` toggle
-(default `'fvcb'`, preserving all current output) and new parameters
-(`Cb6f_max`, `α₁`). The difference is mainly visible as a smoother,
-slightly lower light-response curve at intermediate light (validated
-against 1,422 A–Q curves across 146 species in the source paper) — pairs
-naturally with a light-response-curve chart feature, since at this model's
-single-point reference conditions the system is already Rubisco-limited and
-the swap is otherwise invisible. Suggested priority: medium.
+### Johnson–Berry electron transport model — ✅ IMPLEMENTED (2026-11-08)
+Mechanistic cytochrome-b6f alternative to the empirical FvCB electron
+transport term, selectable via `params.photochemistry_model` (default
+`'fvcb'`, preserving all prior output byte-for-byte). See
+`src/model/electronTransport.ts`, `src/model/kin.ts`, and
+`docs/proposals/johnson_berry.md` for the implementation, the exact
+equations (verified directly against the source PDF's rendered equations —
+an earlier AI-summarized reading of the paper had gotten the eta formula
+subtly wrong), and test coverage. Exposed in the UI as an "Electron
+transport model" toggle on the Advanced tab.
+
+### Light response curves (still open)
+A mini chart showing A vs light (PAR) at current params. This is exactly
+where the FvCB-vs-Johnson-Berry difference becomes visible to a user — at
+this model's default single-point reference conditions (400 ppm, 1000
+µmol) the system is already Rubisco-limited, where the two electron
+transport models converge and the difference is easy to miss without a
+curve. A verified light sweep at the Johnson-Berry defaults (400 ppm CO2,
+25C) shows A roughly 15-20% lower than FvCB in the 50-800 µmol range
+(e.g. 12.48 vs 15.32 µmol/m²/s at 400 µmol), narrowing to ~0% once Rubisco
+becomes limiting above ~1500-2000 µmol, where both models predict the same
+A (30.15 µmol/m²/s in this sweep) — this chart would make that pattern
+visible interactively rather than requiring a console script to see it.
 
 ## Priority 5 — Future Model Extensions
 

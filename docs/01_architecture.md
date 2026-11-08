@@ -22,6 +22,17 @@ kin() → photoResp() → photoRespKinetic() → bypass*() → metabolicOutputs(
 - `Tp25 = Vcmax25/12` default (TPU rare in Arabidopsis but included)
 - **DECISION**: kin() is never modified. kinFeedback() wraps it for bypass comparison.
 
+### Electron transport (`J`) — two selectable formulations
+`params.photochemistry_model` gates which formula computes `J`, default
+`'fvcb'` (preserves all the above byte-for-byte). `'johnson_berry'` selects
+a mechanistic cytochrome-b6f-based alternative (Lamour, Chave, Johnson,
+Berry et al. 2026) that replaces the empirical `theta` curvature parameter.
+Both paths share the same downstream `Wj = J×Cc/(4×Cc+8×GS)` conversion —
+the JB equations only replace how `J` itself is computed, not how it's
+turned into a carboxylation rate. See `src/model/electronTransport.ts` and
+`docs/proposals/johnson_berry.md` [est sp:multi] for the equations,
+parameter mapping, and verification against the source PDF.
+
 ## Photorespiration (`photoResp()`)
 Stoichiometric fluxes only. All 1:1 with Vo except:
 - `flux_glycolate = 2 × Vo` (2C per oxygenation)

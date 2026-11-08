@@ -5,7 +5,15 @@
 // constant, or default here — this is the frozen FvCB core. kinFeedback()
 // re-derives A with the three feedback loops layered on top; it never
 // mutates kin()'s own output.
+//
+// EXCEPTION: the electron-transport term (J) has a second, opt-in
+// formulation — Johnson-Berry (JB), gated behind
+// params.photochemistry_model. Left unset (the default), behavior and
+// output are byte-identical to before this was added; this is additive,
+// not a modification of the frozen FvCB path. See
+// docs/proposals/johnson_berry.md.
 
+import { computeEta, computeJ_FvCB, computeJ_JohnsonBerry, PHI_1P_MAX } from './electronTransport';
 import { _arr, _clamp, _peaked } from './constants';
 import type { Env, KinOutput, Params } from './types';
 
@@ -31,12 +39,24 @@ export function kin(env: Env, params: Params = {}): KinOutput {
   const alpha = params.alpha ?? 0.3;
   const theta = params.theta ?? 0.7;
   const I = Math.max(0, env.light);
-  const aI = alpha * I;
-  const J =
-    (aI + JmaxT - Math.sqrt(Math.max(0, Math.pow(aI + JmaxT, 2) - 4 * theta * aI * JmaxT))) /
-    (2 * theta);
-  const Rd = (params.Rd_fraction ?? 0.015) * Vcmax25 * _arr(46390, Tk);
+  // Cc moved up from its original position (just below) so the
+  // Johnson-Berry path can use it for eta. Its value is unaffected by
+  // this reordering — it depends only on env/params, not on J.
   const Cc = env.co2 * (params.ci_ca ?? 0.7) * (params.Cc_Ci ?? 0.8);
+  const photochemistryModel = params.photochemistry_model ?? 'fvcb';
+  let J: number;
+  let eta: number | null = null;
+  let Cb6fmax: number | null = null;
+  if (photochemistryModel === 'johnson_berry') {
+    const Cb6fmax25 = params.Cb6f_max25 ?? 1.4 * Jmax25; // [est sp:multi] see docs/proposals/johnson_berry.md
+    Cb6fmax = Cb6fmax25 * _peaked(43900, 200000, 640, Tk); // same temp response as Jmax [est]
+    const alpha1 = params.alpha1 ?? alpha;
+    eta = computeEta(Cc, GS);
+    J = computeJ_JohnsonBerry(Cb6fmax, alpha1, PHI_1P_MAX, eta, I);
+  } else {
+    J = computeJ_FvCB(alpha, theta, JmaxT, I);
+  }
+  const Rd = (params.Rd_fraction ?? 0.015) * Vcmax25 * _arr(46390, Tk);
   const Oc = env.o2 * 10;
   const Wc = (Vcmax * Cc) / (Cc + Kc * (1 + Oc / Ko));
   const Wj = (J * Cc) / (4 * Cc + 8 * GS);
@@ -68,6 +88,9 @@ export function kin(env: Env, params: Params = {}): KinOutput {
     Vomax,
     Jmax: JmaxT,
     limitState: Wc <= Wj && Wc <= Wp ? 'Rubisco' : Wj <= Wp ? 'RuBP' : 'TPU',
-    belowCompPt: Cc < GS
+    belowCompPt: Cc < GS,
+    photochemistryModel,
+    eta,
+    Cb6fmax
   };
 }

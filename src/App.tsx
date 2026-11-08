@@ -39,6 +39,7 @@ export default function App() {
 
   const setE = (k: keyof Env, v: number) => setEnv((e) => ({ ...e, [k]: v }));
   const setP = (k: string, v: number) => setPar((p) => ({ ...p, [k]: v }));
+  const setPStr = (k: string, v: string) => setPar((p) => ({ ...p, [k]: v }));
 
   const applyScenario = (name: string) => {
     setScenario(name);
@@ -136,6 +137,8 @@ export default function App() {
         setE={setE}
         par={par}
         setP={setP}
+        setPStr={setPStr}
+        m={m}
         moduleTab={moduleTab}
         bypassActive={bypassActive}
         setBypassActive={setBypassActive}

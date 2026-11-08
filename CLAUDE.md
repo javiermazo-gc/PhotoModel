@@ -47,7 +47,14 @@ there on.
   bypass or feedback loop. `kinFeedback()` wraps/re-derives `A` afterward
   instead. Any change here needs a strong justification and a new
   regression test — see `docs/01_architecture.md` for why specific formulas
-  (e.g. `Wj = J × Cc / (4×Cc + 8×GS)`) are chosen.
+  (e.g. `Wj = J × Cc / (4×Cc + 8×GS)`) are chosen. The one sanctioned
+  exception: `electronTransport.ts` provides a second, opt-in formulation
+  for `J` (Johnson-Berry, gated behind `params.photochemistry_model`,
+  default unchanged) — see `docs/proposals/johnson_berry.md`. When sourcing
+  equations from a paper, verify against the actual typeset equations
+  (render the PDF page to an image if needed) rather than an AI-summarized
+  reading — that exact mistake happened once already during this feature's
+  implementation and was only caught by a failing bounds test.
 - **`photoResp.ts`** — two functions: `photoResp()` (pure stoichiometric
   fluxes off `Vo`) and `photoRespKinetic()` (enzyme-level saturation and
   pool-size estimates for GOX/GDC/GGAT/HPR1/PGLP1).
