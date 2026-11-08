@@ -99,19 +99,19 @@ See `docs/02_errors_and_status.md` for full detail and
    `-16000 J/mol`; corrected to `-12600 J/mol`, the standard enthalpy of O₂
    dissolution.
 
-## What was simplified in the UI port
+## UI port fidelity
 
-The original prototype's SVG metabolic map hand-tuned a very large number
-of coordinate constants that shifted per module tab and per active bypass
-design (dynamic SVG height, different node offsets for each of the four
-bypass pathways, a multi-step GCL/TSR/GK tail for McG, mouse-wheel zoom and
-click-drag pan). This port's `src/components/MetabolicMap.tsx` shows the
-same compartments, nodes, tooltips, and real flux values for all four
-bypass designs on a single fixed-size canvas with simplified, hand-picked
-coordinates, and omits the mouse-wheel zoom / click-drag pan interaction
-entirely (the SVG scales with its container via `width="100%"` instead).
-See `docs/04_future_improvements.md` (Priority 3) for what full geometric
-parity — and restoring zoom/pan — would involve.
+`src/components/MetabolicMap.tsx` is a 1:1 geometric port of the original
+prototype's SVG metabolic map, including the coordinate constants that
+shift per module tab and per active bypass design (dynamic SVG height,
+distinct node offsets for each of the four bypass pathways, the multi-step
+GCL/TSR/GK tail plus malyl-CoA/malate sub-row for McG, and mouse-wheel
+zoom / click-drag pan). `src/components/RightPanel.tsx` likewise restores
+the original's full right-panel output: the scenario-comparison table, the
+uncertainty log, per-bypass metabolic-fates breakdown, and the Pools &
+Enz. active-feedback/reference-only sections. See
+`docs/04_future_improvements.md` (Priority 3) for the handful of remaining
+cosmetic (non-geometric) differences.
 
 ## Development workflow
 

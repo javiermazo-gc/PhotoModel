@@ -1,11 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
-import { ARROW_INFO, ENV_DEF, NODE_INFO, PAR_DEF } from './data/metadata';
+import { useMemo, useState } from 'react';
+import { ENV_DEF, PAR_DEF } from './data/metadata';
 import { runModel, SCENARIOS, type BypassType, type Env, type Params } from './model';
 import { ControlPanel } from './components/ControlPanel';
 import { MetabolicMap } from './components/MetabolicMap';
 import { RightPanel } from './components/RightPanel';
 import { Legend } from './components/panels';
-import { Tip, type TipState } from './components/primitives';
 
 type ModuleTab = 'core' | 'pr' | 'bypass' | 'advanced';
 type RightTab = 'metrics' | 'bypass' | 'pools';
@@ -27,7 +26,6 @@ export default function App() {
   const [rightTab, setRightTab] = useState<RightTab>('metrics');
   const [activeInfo, setActiveInfo] = useState<string | null>(null);
   const [showLegend, setShowLegend] = useState(false);
-  const [tip, setTip] = useState<TipState | null>(null);
 
   const switchModule = (tab: ModuleTab) => {
     setModuleTab(tab);
@@ -74,20 +72,6 @@ export default function App() {
       }),
     [env, par, bypassActive, bypassType]
   );
-
-  const onA = useCallback((key: string, x: number, y: number, flux: number) => {
-    if (!key) {
-      setTip(null);
-      return;
-    }
-    const info = ARROW_INFO[key];
-    if (info) setTip({ info: { ...info, flux }, x, y });
-  }, []);
-
-  const onN = useCallback((key: string, x: number, y: number) => {
-    const info = NODE_INFO[key];
-    if (info) setTip({ info, x, y });
-  }, []);
 
   return (
     <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, paddingBottom: '1rem' }}>
@@ -150,19 +134,21 @@ export default function App() {
 
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1, padding: 10, position: 'relative', minWidth: 0 }}>
-          <MetabolicMap m={m} moduleTab={moduleTab} bypassActive={bypassActive} bypassType={bypassType} onA={onA} onN={onN} />
-          {tip && (
-            <div style={{ position: 'absolute', top: 10, left: 10, pointerEvents: 'none' }}>
-              <svg width={640} height={390} viewBox="0 0 640 390" style={{ overflow: 'visible' }}>
-                <g style={{ pointerEvents: 'all' }}>
-                  <Tip tip={tip} W={640} onClose={() => setTip(null)} />
-                </g>
-              </svg>
-            </div>
-          )}
+          <MetabolicMap m={m} moduleTab={moduleTab} bypassActive={bypassActive} bypassType={bypassType} />
           <Legend show={showLegend} onToggle={() => setShowLegend((v) => !v)} />
         </div>
-        <RightPanel m={m} rightTab={rightTab} setRightTab={setRightTab} activeInfo={activeInfo} setActiveInfo={setActiveInfo} bypassActive={bypassActive} />
+        <RightPanel
+          m={m}
+          rightTab={rightTab}
+          setRightTab={setRightTab}
+          activeInfo={activeInfo}
+          setActiveInfo={setActiveInfo}
+          bypassActive={bypassActive}
+          env={env}
+          par={par}
+          scenario={scenario}
+          applyScenario={applyScenario}
+        />
       </div>
     </div>
   );

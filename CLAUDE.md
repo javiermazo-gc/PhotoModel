@@ -110,7 +110,14 @@ preserve unless a change is deliberate and documented.
 `src/components/` (SVG metabolic map, control panel, metrics/bypass/pools
 side panel) and `src/data/metadata.ts` (tooltip copy, presets — no
 biochemistry) sit on top of `runModel()` and have no business logic of
-their own. The SVG map uses a single fixed-size canvas with simplified
-coordinates rather than the original prototype's per-tab/per-bypass dynamic
-layout — see `docs/04_future_improvements.md` (Priority 3) before trying to
-restore full geometric fidelity or zoom/pan.
+their own. `MetabolicMap.tsx` is a faithful geometric port of the original
+prototype's dynamic layout engine (`minimal_map_BACKUP_20261007.tsx`): the
+same `nd`/`sn` coordinate tables, the same dynamic `stromaH`/compartment-box
+sizing per module tab × bypass design, the same per-bypass-type branches
+(Kebeish/South/cBHAC/McG, including the McG malyl-CoA/malate sub-row), and
+self-contained mouse-wheel zoom + click-drag pan. `RightPanel.tsx` restores
+the original's full output surface (scenario comparison table, uncertainty
+log, per-bypass metabolic-fates breakdown, Γ*_eff/λ_eff, and the Pools &
+Enz. active-feedback/reference-only breakdown). See
+`docs/04_future_improvements.md` (Priority 3) for the few cosmetic gaps
+still open.

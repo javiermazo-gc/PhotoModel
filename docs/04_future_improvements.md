@@ -12,22 +12,16 @@ transport model).
 
 ## Priority 2 — Model Completeness
 
-### McG GCL/TSR/GK tail
+### McG GCL/TSR/GK tail — done (2026-11-08)
 The malyl-CoA-glycerate cycle name refers to glycerate being produced via
 GCL→TSR from recycled glyoxylate. Lu 2025 uses the same GCL/TSR/GK enzymes
-as Kebeish for this arm. The model currently only shows Mode A AcCoA and
-Mode B. The GCL tail producing 3-PGA should be added:
-- `flux_tartronate_mcg = bypass_flux * 0.5`
-- `flux_glycerate_mcg = flux_tartronate_mcg`
-- `flux_3pga_mcg = flux_glycerate_mcg`
-
-(Note: these three fields are already computed and returned by
-`bypassMcG()` in this codebase — they were added incidentally while fixing
-Bug #2 above, since `flux_3pga_mcg` needed a real definition. What remains
-undone from this item is giving the GCL/TSR/GK tail its own three-node,
-three-arrow chain in the SVG map, matching the Kebeish layout, rather than
-the single collapsed "glycerate shunt" arrow currently drawn in
-`src/components/MetabolicMap.tsx`.)
+as Kebeish for this arm. `flux_tartronate_mcg`/`flux_glycerate_mcg`/
+`flux_3pga_mcg` were already computed by `bypassMcG()`; `MetabolicMap.tsx`
+now gives this tail its own three-node, three-arrow chain (Glyox. →
+Tartr.-SA → Glycerate → 3-PGA, same visual treatment as the Kebeish chain),
+plus the separate malyl-CoA/malate sub-row (MTK/MCL step) directly beneath
+it, connected by a dashed fork line — matching the original prototype's
+`minimal_map_BACKUP_20261007.tsx` layout.
 
 ### Kebeish `A_bypass` CO₂_saved_mito
 The benefit from reduced mitochondrial CO₂ release (native PR reduced by
@@ -49,37 +43,32 @@ labelled. Not yet implemented in `bypassMcG()`.
 
 ## Priority 3 — SVG Improvements
 
-### McG visual layout
-- The two-branch layout (GCL row + MTK/MCL row) is conceptually correct
-- MalylCoA and Malate labels were being confused with wrong NODE_INFO
-  entries
-- Fix: Add proper `malylcoa` and `malate_mcg` entries to NODE_INFO (already
-  present in `src/data/metadata.ts` in this codebase)
+Status as of 2026-11-08: `src/components/MetabolicMap.tsx` was rewritten as
+a faithful 1:1 geometric port of `minimal_map_BACKUP_20261007.tsx`'s
+dynamic layout engine — the same `nd`/`sn` coordinate tables, the same
+`stromaH`/`PEROX_*`/`MITO_*`/cytosol sizing formulas (which shift per
+module tab × bypass design, exactly as in the original), the same
+per-bypass-type branches, and self-contained mouse-wheel zoom + click-drag
+pan. Verified by: (a) side-by-side screenshots against
+`photosynthesis_model.html` for Core/PR/Advanced and all four bypass
+designs, and (b) a DOM bounding-box check confirming every SVG element in
+both the port and the original stays within the shared `viewBox` (zero
+off-canvas elements) for each state. This resolves the items that used to
+be listed here (McG visual layout, bypass arrow entry from glycolate,
+peroxisome layout, full per-bypass-design fidelity).
 
-### Bypass arrow entry from glycolate
-All CrGDH bypasses should show an explicit arrow from glycolate →
-glyoxylate (CrGDH step) in stroma, clearly labelled, before diverging to
-their respective paths. (Present in this codebase's `MetabolicMap.tsx` as
-the single `ak="gcl"` arrow feeding into each bypass compartment box.)
-
-### Peroxisome layout
-- Glycolate (entry, top-left), Glycine (top-right), HPP (bottom-right),
-  Glycerate (bottom-left offset from glycolate to separate vertical arrows)
-- GOX step shown inside perox as horizontal arrow glycolate→glyoxylate
-
-### Full per-bypass-design SVG fidelity (carried over from the 2026-11-07 port)
-The original prototype (`minimal_map_BACKUP_20261007.tsx`) hand-tuned
-~50+ coordinate constants per module tab × bypass type (a 600×dynamic-height
-SVG whose compartment box sizes, node positions, and arrow bends all shift
-depending on which tab and bypass design is active). This port's
-`src/components/MetabolicMap.tsx` reproduces the same compartments, the
-same nodes, the same ARROW_INFO/NODE_INFO tooltip content, and the same
-real flux values for all four bypass designs, but on a single fixed-size
-canvas with simplified, hand-picked coordinates rather than the original's
-fully dynamic per-state layout engine. Restoring full 1:1 geometric
-fidelity (dynamic SVG height per tab/bypass combination, the exact original
-node offsets, and the full multi-arrow McG GCL/TSR/GK tail) is a good next
-SVG-polish task.
+What's left is genuinely cosmetic:
+- The zoom (+/reset%/−) toolbar sits in its own row above the map pane
+  rather than inline in the page header next to the title, since
+  `MetabolicMap.tsx` owns its zoom/pan state locally instead of threading
+  it through `App.tsx` props.
+- `SatPill` (enzyme-saturation percentage pill) and `LimitBanner` exist in
+  `src/components/primitives.tsx` / `panels.tsx` and are kept available,
+  but — matching the original, where both are defined and never actually
+  rendered in the main map/right-panel — `SatPill` is unused on the map.
+  `LimitBanner` *is* rendered in this port's Metrics tab even though the
+  original never called it either; this is a deliberate small improvement
+  kept from the previous pass, not a fidelity gap.
 
 ## Priority 4 — New Features
 
