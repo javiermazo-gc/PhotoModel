@@ -78,6 +78,25 @@ its Vitest suite (`src/model/__tests__/runModel.test.ts`) asserts `"RuBP"`
 with a comment explaining the discrepancy, rather than silently "fixing"
 the model to match the stale doc text.
 
+**Why it is RuBP-limited (traced 2026-11-13 while building the response-curve
+chart).** `kin()` alone *is* Rubisco-limited at these conditions (`A=25.85`,
+the `A_fvCB` extra in the Metrics tab). The switch to RuBP happens in
+`kinFeedback()`, which multiplies `Wj` by the 2-PG→TPI/SBPase inhibition
+term and Trx f's `cbb_regen_activation` (≈0.95). That pulls `Wj` from
+≥31.3 down to ≈22.1 [est: Ki_TPI 0.066 mM / Ki_SBPase 0.2 mM are
+sp:spinach, pool_2PG depends on the usr⚠ `PGLP_Vmax25`]. Because the 2-PG
+pool tracks `Vo`, which rises with light alongside `Wj`, the full model stays
+RuBP-limited across the whole 0-2000 µmol PAR range at 400 ppm / 25 °C
+(A≈23.3 at 2000 µmol vs `kin()`'s Rubisco-limited 30.15). One consequence:
+FvCB and Johnson-Berry never converge on the full-model A–light curve, and
+at 2000 µmol J-B sits slightly *above* FvCB (23.9 vs 23.3), because J-B's
+`Wj` keeps rising where FvCB's θ-curve has flattened. Nothing was changed;
+this is recorded as a behaviour to keep in mind when reading the
+`LimitBanner` advice ("need more light") or comparing against measured
+light-response curves, where Arabidopsis typically does become
+Rubisco/CO₂-limited at high light. Covered by
+`src/model/__tests__/sweep.test.ts`.
+
 ## Verification Tests (run in browser console)
 ```javascript
 const env = {co2:400, o2:21, temp:25, light:1000, pi:100, act:100};

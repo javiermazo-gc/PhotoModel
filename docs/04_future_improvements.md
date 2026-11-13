@@ -86,9 +86,6 @@ current env conditions. `compareScenarios()` already exists in
 ### Export/import params
 Save/load slider state as JSON for reproducibility.
 
-### Temperature response curves
-A mini chart showing A vs temperature at current params.
-
 ### Johnson–Berry electron transport model — ✅ IMPLEMENTED (2026-11-08)
 Mechanistic cytochrome-b6f alternative to the empirical FvCB electron
 transport term, selectable via `params.photochemistry_model` (default
@@ -100,18 +97,23 @@ an earlier AI-summarized reading of the paper had gotten the eta formula
 subtly wrong), and test coverage. Exposed in the UI as an "Electron
 transport model" toggle on the Advanced tab.
 
-### Light response curves (still open)
-A mini chart showing A vs light (PAR) at current params. This is exactly
-where the FvCB-vs-Johnson-Berry difference becomes visible to a user — at
-this model's default single-point reference conditions (400 ppm, 1000
-µmol) the system is already Rubisco-limited, where the two electron
-transport models converge and the difference is easy to miss without a
-curve. A verified light sweep at the Johnson-Berry defaults (400 ppm CO2,
-25C) shows A roughly 15-20% lower than FvCB in the 50-800 µmol range
-(e.g. 12.48 vs 15.32 µmol/m²/s at 400 µmol), narrowing to ~0% once Rubisco
-becomes limiting above ~1500-2000 µmol, where both models predict the same
-A (30.15 µmol/m²/s in this sweep) — this chart would make that pattern
-visible interactively rather than requiring a console script to see it.
+### Response curves (light / CO₂ / temperature) — ✅ IMPLEMENTED (2026-11-13)
+`src/components/ResponseCurves.tsx`, in a "Response curves" section of the
+right panel's Metrics tab. It plots net A against PAR, CO₂ or leaf
+temperature at the current parameters (bypass included). The active
+electron-transport model is a solid line coloured by limitation state; the
+other model (FvCB ↔ Johnson-Berry) is a dashed overlay that can be turned
+off; the current operating point is marked. Points come from `sweepEnv()`
+(`src/model/sweep.ts`), a pure map over `runModel()` with no new
+biochemistry; tests in `src/model/__tests__/sweep.test.ts`.
+
+Correction to the earlier note here: the "J-B 15-20% below FvCB,
+converging at 30.15 µmol/m²/s above ~1500-2000 µmol" pattern describes
+`kin()` alone. In the full model, `kinFeedback()` keeps the leaf
+RuBP-limited across the whole light range at 400 ppm, so the two curves do
+not converge. The gap is ~17% at 400 µmol and ~9% at 1000 µmol, and J-B
+crosses slightly above FvCB near 2000 µmol. See the note in
+`docs/02_errors_and_status.md`.
 
 ## Priority 5 — Future Model Extensions
 

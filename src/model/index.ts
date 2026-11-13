@@ -11,3 +11,5 @@ export { trxfState } from './trxfState';
 export { kinFeedback } from './kinFeedback';
 export { runModel, runScenario, compareScenarios, SCENARIOS } from './runModel';
 export type { Scenario } from './runModel';
+export { sweepEnv, SWEEP_RANGE } from './sweep';
+export type { SweepVar, SweepPoint } from './sweep';

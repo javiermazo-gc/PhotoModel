@@ -63,15 +63,11 @@ export default function App() {
     }
   };
 
-  const m = useMemo(
-    () =>
-      runModel(env, {
-        ...par,
-        bypass_active: bypassActive,
-        bypass_type: bypassType
-      }),
-    [env, par, bypassActive, bypassType]
+  const modelPar = useMemo<Params>(
+    () => ({ ...par, bypass_active: bypassActive, bypass_type: bypassType }),
+    [par, bypassActive, bypassType]
   );
+  const m = useMemo(() => runModel(env, modelPar), [env, modelPar]);
 
   return (
     <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, paddingBottom: '1rem' }}>
@@ -146,6 +142,7 @@ export default function App() {
           bypassActive={bypassActive}
           env={env}
           par={par}
+          modelPar={modelPar}
           scenario={scenario}
           applyScenario={applyScenario}
         />

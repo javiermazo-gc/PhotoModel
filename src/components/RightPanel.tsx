@@ -8,6 +8,7 @@
 import { CONF } from '../data/metadata';
 import { compareScenarios, SCENARIOS, type Env, type ModelOutput, type Params } from '../model';
 import { InfoPop, LimitBanner, MCard } from './panels';
+import { ResponseCurves } from './ResponseCurves';
 
 const num = (v: unknown): number => (typeof v === 'number' ? v : 0);
 
@@ -20,11 +21,13 @@ interface RightPanelProps {
   bypassActive: boolean;
   env: Env;
   par: Params;
+  /** Params exactly as passed to runModel() (incl. bypass_active/bypass_type). */
+  modelPar: Params;
   scenario: string;
   applyScenario: (name: string) => void;
 }
 
-export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo, bypassActive, env, par, scenario, applyScenario }: RightPanelProps) {
+export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo, bypassActive, env, par, modelPar, scenario, applyScenario }: RightPanelProps) {
   return (
     <div style={{ width: 264, flexShrink: 0, borderLeft: '0.5px solid var(--color-border-tertiary)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', borderBottom: '0.5px solid var(--color-border-tertiary)' }}>
@@ -57,7 +60,7 @@ export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo
       </div>
 
       <div style={{ padding: 11, overflowY: 'auto', flex: 1 }}>
-        {rightTab === 'metrics' && <MetricsTab m={m} par={par} env={env} scenario={scenario} applyScenario={applyScenario} activeInfo={activeInfo} setActiveInfo={setActiveInfo} bypassActive={bypassActive} />}
+        {rightTab === 'metrics' && <MetricsTab m={m} par={par} modelPar={modelPar} env={env} scenario={scenario} applyScenario={applyScenario} activeInfo={activeInfo} setActiveInfo={setActiveInfo} bypassActive={bypassActive} />}
         {rightTab === 'bypass' && <BypassTab m={m} bypassActive={bypassActive} />}
         {rightTab === 'pools' && <PoolsTab m={m} />}
       </div>
@@ -69,6 +72,7 @@ export function RightPanel({ m, rightTab, setRightTab, activeInfo, setActiveInfo
 function MetricsTab({
   m,
   par,
+  modelPar,
   env,
   scenario,
   applyScenario,
@@ -78,6 +82,7 @@ function MetricsTab({
 }: {
   m: ModelOutput;
   par: Params;
+  modelPar: Params;
   env: Env;
   scenario: string;
   applyScenario: (name: string) => void;
@@ -138,6 +143,11 @@ function MetricsTab({
       <div style={{ marginTop: 8 }}>
         <LimitBanner m={m as any} />
       </div>
+
+      <details open style={{ marginTop: 8 }}>
+        <summary style={{ fontSize: 9.5, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none', marginBottom: 5 }}>▶ Response curves</summary>
+        <ResponseCurves env={env} params={modelPar} currentA={num(m.A)} />
+      </details>
 
       <details style={{ marginTop: 8 }}>
         <summary style={{ fontSize: 9.5, fontWeight: 500, color: 'var(--color-text-secondary)', cursor: 'pointer', userSelect: 'none', marginBottom: 5 }}>▶ Compare all scenarios</summary>
