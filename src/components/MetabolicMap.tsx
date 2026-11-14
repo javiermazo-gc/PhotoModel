@@ -76,7 +76,13 @@ export function MetabolicMap({ m, moduleTab, bypassActive, bypassType }: Metabol
 
   // ── Layout constants — ported verbatim from the original ───────────────
   const SVG_W = 600;
-  const stromaH = bypassActive && (moduleTab === 'bypass' || moduleTab === 'advanced') ? (bypassType === 'mcg' ? 250 : 230) : 138;
+  // mcg gets extra height beyond the original's 250px: its malyl-CoA/malate
+  // sub-row + "Mode B" caption were cramped enough in the original to
+  // produce an actual label collision (verified by comparing rendered text
+  // bounding boxes against the original pixel-for-pixel — both have it).
+  // This is a deliberate improvement on the original's layout, not a
+  // fidelity target.
+  const stromaH = bypassActive && (moduleTab === 'bypass' || moduleTab === 'advanced') ? (bypassType === 'mcg' ? 292 : 230) : 138;
 
   const PEROX_X = 4,
     PEROX_W = 310,
@@ -379,7 +385,9 @@ function BypassLayer({
   // mcg — glyoxylate→tartronate-SA→glycerate shunt (top row, same enzymes as
   // Kebeish) PLUS a malyl-CoA→malate sub-row directly beneath, fully
   // contained inside the (widened) stroma box via the fork connector line.
-  const brow = sn.tartr[1] + 52;
+  // Gap widened from the original's 52 (-> 68) to give the "Mode B" caption
+  // below room to clear the node labels without colliding (see stromaH).
+  const brow = sn.tartr[1] + 68;
   const bx1 = sn.glyox_k[0];
   const bx2 = sn.tartr[0];
   const forkX = sn.glyox_k[0] + NW / 2;
@@ -407,7 +415,7 @@ function BypassLayer({
         <Arrow x1={bx2 + SR} y1={brow} x2={sn.glycer_k[0] + NW / 2} y2={brow} flux={num(m.flux_malate_lipid)} color="#1D9E75" dashed label="→FA synth" />
       )}
       {num(m.modeB_flux) > 0.01 && (
-        <text x={bx1} y={brow + SR + 14} fontSize={6.5} fill="#1D9E75">
+        <text x={bx1} y={brow + SR + 26} fontSize={6.5} fill="#1D9E75">
           Mode B: 3PGA→Ppc ({num(m.CO2_fixed_modeB).toFixed(2)} µmol CO₂/m²/s fixed)
         </text>
       )}
