@@ -79,12 +79,13 @@ with a comment explaining the discrepancy, rather than silently "fixing"
 the model to match the stale doc text.
 
 **Why it is RuBP-limited (traced 2026-11-13 while building the response-curve
-chart).** `kin()` alone *is* Rubisco-limited at these conditions (`A=25.85`,
-the `A_fvCB` extra in the Metrics tab). The switch to RuBP happens in
-`kinFeedback()`, which multiplies `Wj` by the 2-PG→TPI/SBPase inhibition
-term and Trx f's `cbb_regen_activation` (≈0.95). That pulls `Wj` from
-≥31.3 down to ≈22.1 [est: Ki_TPI 0.066 mM / Ki_SBPase 0.2 mM are
-sp:spinach, pool_2PG depends on the usr⚠ `PGLP_Vmax25`]. Because the 2-PG
+chart; corrected 2026-11-15).** `kin()` alone is *also* RuBP-limited here
+(`Wj≈27.7 < Wc≈32.0`, giving `A_fvCB=25.85`); it only becomes
+Rubisco-limited somewhere between 1500 and 2000 µmol PAR. `kinFeedback()`
+then multiplies `Wj` by the 2-PG→TPI/SBPase inhibition term and Trx f's
+`cbb_regen_activation` (≈0.95), pulling it to ≈22.1, while `Wc` only drops
+to ≈31.3 [est: Ki_TPI 0.066 mM / Ki_SBPase 0.2 mM are sp:spinach,
+pool_2PG depends on the usr⚠ `PGLP_Vmax25`]. Because the 2-PG
 pool tracks `Vo`, which rises with light alongside `Wj`, the full model stays
 RuBP-limited across the whole 0-2000 µmol PAR range at 400 ppm / 25 °C
 (A≈23.3 at 2000 µmol vs `kin()`'s Rubisco-limited 30.15). One consequence:
